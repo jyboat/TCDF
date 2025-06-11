@@ -210,27 +210,37 @@ def runTCDF(datafile):
 
     return allcauses, alldelays, allreallosses, allscores, columns
 
-def plotgraph(stringdatafile,alldelays,columns):
+def plotgraph(stringdatafile, alldelays, columns):
     """Plots a temporal causal graph showing all discovered causal relationships annotated with the time delay between cause and effect."""
     G = nx.DiGraph()
     for c in columns:
         G.add_node(c)
     for pair in alldelays:
-        p1,p2 = pair
+        p1, p2 = pair
         nodepair = (columns[p2], columns[p1])
+        G.add_edges_from([nodepair], weight=alldelays[pair])
+    
+    edge_labels = dict([((u, v,), d['weight']) for u, v, d in G.edges(data=True)])
 
-        G.add_edges_from([nodepair],weight=alldelays[pair])
-    
-    edge_labels=dict([((u,v,),d['weight'])
-                    for u,v,d in G.edges(data=True)])
-    
-    pos=nx.circular_layout(G)
-    nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
-    nx.draw(G,pos, node_color = 'white', edge_color='black',node_size=1000,with_labels = True)
+    plt.figure(figsize=(18, 14))  # ✅ ← Set a larger figure size here
+    pos = nx.circular_layout(G)  # You can try spring_layout or kamada_kawai_layout if needed
+
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=12)
+    nx.draw(G, pos,
+            node_color='white',
+            edge_color='black',
+            node_size=2000,       # Bigger nodes
+            with_labels=True,
+            font_size=12,         # Bigger font
+            font_weight='bold')
+
     ax = plt.gca()
-    ax.collections[0].set_edgecolor("#000000") 
+    ax.collections[0].set_edgecolor("#000000")  # Keep black border on nodes
 
-    pylab.show()
+    plt.tight_layout()                          # ✅ Helps avoid clipping
+    plt.savefig(f"{stringdatafile}_graph.png", bbox_inches='tight')  # Optional: save it too
+    plt.show()
+
 
 def main(datafiles, evaluation):
     if evaluation:
