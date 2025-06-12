@@ -222,8 +222,8 @@ def plotgraph(stringdatafile, alldelays, columns):
     
     edge_labels = dict([((u, v,), d['weight']) for u, v, d in G.edges(data=True)])
 
-    plt.figure(figsize=(18, 14))  # ✅ ← Set a larger figure size here
-    pos = nx.circular_layout(G)  # You can try spring_layout or kamada_kawai_layout if needed
+    plt.figure(figsize=(18, 14))  # Set a larger figure size here
+    pos = nx.circular_layout(G) 
 
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=12)
     nx.draw(G, pos,
