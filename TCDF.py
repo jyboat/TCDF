@@ -160,10 +160,13 @@ def findcauses(target, cuda, epochs, kernel_size, layers,
         else:
             causeswithdelay[(targetidx, v)]=totaldelay+1
     print("Validated causes: ", validated)
+
+        # Rank validated causes by their attention scores
+    validated_scores = [(v, scores[v].item()) for v in validated]
+    ranked_validated = sorted(validated_scores, key=lambda x: x[1], reverse=True)
+
+    print("Ranked validated causes by attention scores:")
+    for rank, (idx, score) in enumerate(ranked_validated, start=1):
+        print(f"{rank}. Variable Index: {idx}, Attention Score: {score}")
     
     return validated, causeswithdelay, realloss, scores.view(-1).cpu().detach().numpy().tolist()
-
-
-
-
-

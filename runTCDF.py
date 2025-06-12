@@ -261,9 +261,18 @@ def main(datafiles, evaluation):
         # run TCDF
         allcauses, alldelays, allreallosses, allscores, columns = runTCDF(datafile) #results of TCDF containing indices of causes and effects
 
+        # print("\n===================Results for", stringdatafile,"==================================")
+        # for pair in alldelays:
+        #     print(columns[pair[1]], "causes", columns[pair[0]],"with a delay of",alldelays[pair],"time steps.")
+
         print("\n===================Results for", stringdatafile,"==================================")
         for pair in alldelays:
-            print(columns[pair[1]], "causes", columns[pair[0]],"with a delay of",alldelays[pair],"time steps.")
+            cause_idx = pair[1]
+            effect_idx = pair[0]
+            delay = alldelays[pair]
+            attention_score = allscores[effect_idx][cause_idx]  # scores are per target (effect)         
+            print(f"{columns[cause_idx]} causes {columns[effect_idx]} with a delay of {delay} time steps and attention of {attention_score:.4f}")
+
 
         
 
